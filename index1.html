@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form</title>
+</head>
+
+<body>
+  <form onsubmit="saveToLocalStorage(event)">
+    <label>Name</label>
+    <input type="text" name="username" id="name" required />
+
+    <label>Email Id</label>
+    <input type="email" name="emailId" id="email" required />
+
+    <label>Phone Number</label>
+    <input type="tel" name="phonenumber" id="phone" />
+
+    <button id="submit">Submit</button>
+  </form>
+  <!-- <ul id="listOfitems">
+      <li><input type="button" value="Delete" /></li>
+    </ul> -->
+
+  <!-- Table that will be show only when a user is being added -->
+
+  <div id="table">
+
+  </div>
+
+  <script>
+
+    let details = [];
+    getData();
+    table();
+
+    function getData() {
+      let data = localStorage.getItem("details");
+      if (data) {
+        details = JSON.parse(data);
+      } else {
+        setData();
+      }
+    }
+
+    function setData() {
+      localStorage.setItem("details", JSON.stringify(details));
+    }
+
+    function table() {
+      let table = `<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>`;
+      for (let i = 0; i < details.length; i++) {
+        table =
+          table +
+          `<tr>
+        <th scope="row">${i + 1}</th>
+        <td>${details[i].name}</td>
+        <td>${details[i].email}</td>
+        <td>${details[i].phone}</td>
+         
+         <td><button type='button' class='btn btn-danger'  onclick='deleteData(${i})'>Delete</button></td>
+      </tr>`;
+      }
+      table =
+        table +
+        `</tbody>
+    </table>`;
+      let name = document.getElementById("name");
+      let email = document.getElementById("email");
+      let phone = document.getElementById("phone");
+      name.value = '';
+      email.value = '';
+      phone.value = '';
+      document.getElementById("table").innerHTML = table;
+    }
+
+    // function saveToLocalStorage(event) {
+    //   event.preventDefault();
+    //   const name = event.target.username.value;
+    //   const email = event.target.emailId.value;
+    //   const phonenumber = event.target.phonenumber.value;
+    //   localStorage.setItem("name", name);
+    //   localStorage.setItem("email", email);
+    //   localStorage.setItem("phonenumber", phonenumber);
+    // }
+    // function showUserOnScreen(obj) {
+    //   const parentElem = document.getElementById("listOfitems");
+
+    //   const childElem = document.createElement("li");
+    //   childElem.textContent =
+    //     obj.name + "-" + obj.email + "-" + obj.phonenumber;
+
+    //   const deleteButton = document.createElement("input");
+    //   deleteButton.type = "button";
+    //   deleteButton.value = "Delete";
+    //   deleteButton.onclick = () => {
+    //     localStorage.removeItem(obj.email);
+    //     parentElem.removeChild(childElem);
+    //   };
+    //   childElem.appendChild(deleteButton);
+    //   parentElem.appendChild(childElem);
+    // }
+    document.getElementById('submit').addEventListener('click', function (e) {
+      e.preventDefault()
+      let name = document.getElementById("name");
+      let email = document.getElementById("email");
+      let phone = document.getElementById("phone");
+      let data = {
+        name: name.value,
+        email: email.value,
+        phone: phone.value,
+      };
+      details.push(data);
+      setData();
+      console.log('details');
+      table();
+    });
+
+    function deleteData(index) {
+      details.splice(index, 1);
+      setData();
+      table();
+    }
+
+  </script>
+</body>
+
+</html>
